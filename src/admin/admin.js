@@ -19,6 +19,12 @@ function Admin() {
     margin: 0 auto;
   `;
 
+  const handleInputChange = (index, newValue) => {
+    const updatedAmounts = [...additionalAmounts];
+    updatedAmounts[index] = newValue;
+    setAdditionalAmounts(updatedAmounts);
+  };
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -85,6 +91,37 @@ function Admin() {
     setSongRequestAmount(e.target.value);
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+  
+    try {
+      const response = await fetch("https://stg.dhunjam.in/account/admin/4", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amount: {
+            category_6: parseInt(songRequestAmount),
+          },
+        }),
+      });
+  
+      if (response.ok) {
+        console.log("Category_6 updated successfully");
+        // Optionally, you can fetch the updated data here and update the state
+      } else {
+        console.error("Failed to update category_6");
+      }
+    } catch (error) {
+      console.error("Error during submission:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+
   return (
     <div className="bg-[#030303] h-screen m-auto p-0 flex justify-center w-full">
       <div className="flex flex-col mt-[40px] items-center w-full">
@@ -134,6 +171,7 @@ function Admin() {
           <div>
             <input
               value={songRequestAmount}
+              onChange={(e) => setSongRequestAmount(e.target.value)}
               className="bg-transparent border-2 rounded-xl text-white p-2 text-center"
             />
           </div>
@@ -151,10 +189,13 @@ function Admin() {
               {additionalAmounts
                 .sort((a, b) => b - a)
                 .map((value, index) => (
-                  <div
+                  <input
                     key={index}
-                    className="text-white mx-2 border-2 px-2 py-1 rounded-md"
-                  >{`${value}`}</div>
+                    type="text" // You can change the type based on your input requirements
+                    value={value}
+                    onChange={(e) => handleInputChange(index, e.target.value)}
+                    className="bg-transparent text-white mx-2 border-2 px-2 py-1 rounded-md w-12"
+                  />
                 ))}
             </div>
           </div>
@@ -182,6 +223,7 @@ function Admin() {
         <div className="px-2 py-4 w-[600px] items-center justify-center flex">
           <button
             type="submit"
+            onClick={handleSubmit}
             className="bg-[#6741D9] hover:bg-[#6741D9] hover:border-2 hover:border-[#F0C3F1] text-white font-bold py-2 px-4 rounded w-3/5"
             disabled={loading}
           >
