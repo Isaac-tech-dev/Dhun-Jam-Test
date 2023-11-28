@@ -165,7 +165,7 @@ function Admin() {
         <div className="w-2/5 flex flex-row justify-between items-center p-2 mb-4">
           <div>
             <h2 className="text-white text-base">
-              Custome song request amount
+              Custom song request amount
             </h2>
           </div>
           <div>
